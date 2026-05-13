@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>播放中...</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Bebas+Neue&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000;
+  --surface:#0f0f0f;
+  --border:#1e1e1e;
+  --accent:#e8ff00;
+  --text:#e8e8e8;
+  --muted:#444;
+  --mono:'IBM Plex Mono',monospace;
+}
+
+html,body{height:100%;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* top bar */
+.topbar{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 16px;
+  border-bottom:1px solid var(--border);
+  background:var(--surface);
+  flex-shrink:0;
+}
+.logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:20px;
+  color:var(--accent);
+  letter-spacing:.08em;
+  text-decoration:none;
+}
+.vid-id{
+  font-size:11px;
+  color:var(--muted);
+  flex:1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.back-btn{
+  font-size:11px;
+  color:var(--muted);
+  text-decoration:none;
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:4px 10px;
+  transition:all .15s;
+  letter-spacing:.06em;
+}
+.back-btn:hover{color:var(--text);border-color:var(--muted);}
+
+/* video area */
+.video-area{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.video-container{
+  flex:1;
+  background:#000;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+video{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+/* error */
+.error-msg{
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+  color:var(--muted);
+  font-size:13px;
+  text-align:center;
+  padding:20px;
+}
+.error-msg.show{display:flex;}
+.error-msg .code{
+  font-size:48px;
+  font-family:'Bebas Neue',sans-serif;
+  color:#222;
+}
+
+/* controls */
+.controls{
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  padding:12px 16px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  flex-shrink:0;
+}
+
+.progress-wrap{
+  position:relative;
+  height:3px;
+  background:var(--border);
+  border-radius:99px;
+  cursor:pointer;
+}
+.progress-fill{
+  height:100%;width:0%;
+  background:var(--accent);
+  border-radius:99px;
+  pointer-events:none;
+}
+.progress-thumb{
+  position:absolute;top:50%;
+  width:11px;height:11px;
+  background:#fff;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  left:0%;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .15s;
+}
+.progress-wrap:hover .progress-thumb{opacity:1;}
+
+.ctrl-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.btn{
+  background:none;border:none;
+  color:var(--text);cursor:pointer;
+  padding:4px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:4px;
+  transition:background .15s;
+}
+.btn:hover{background:var(--border);}
+.btn svg{width:18px;height:18px;fill:currentColor;}
+
+.time{font-size:11px;color:var(--muted);min-width:96px;}
+.spacer{flex:1;}
+
+.vol-wrap{display:flex;align-items:center;gap:6px;}
+.vol-slider{
+  -webkit-appearance:none;
+  width:64px;height:3px;
+  border-radius:99px;
+  background:var(--border);
+  outline:none;cursor:pointer;
+}
+.vol-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:11px;height:11px;
+  border-radius:50%;
+  background:var(--accent);
+  cursor:pointer;
+}
+.speed-btn{
+  font-size:11px;
+  font-family:var(--mono);
+  color:var(--muted);
+  background:var(--border);
+  border:none;border-radius:3px;
+  padding:4px 8px;cursor:pointer;
+  transition:color .15s;
+}
+.speed-btn:hover{color:var(--text);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="logo" href="../" id="homeLink">VIDLINK</a>
+  <span class="vid-id" id="vidIdLabel"></span>
+  <a class="back-btn" href="../" id="backBtn">← 產生新連結</a>
+</div>
+
+<div class="video-area">
+  <div class="video-container">
+    <video id="vid" preload="metadata" autoplay></video>
+    <div class="error-msg" id="errorMsg">
+      <div class="code">404</div>
+      <div>找不到影片，請確認 ID 是否正確</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-fill" id="progressFill"></div>
+      <div class="progress-thumb" id="progressThumb"></div>
+    </div>
+    <div class="ctrl-row">
+      <button class="btn" onclick="skip(-10)" title="倒退10秒">
+        <svg viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg>
+      </button>
+      <button class="btn" id="playBtn" onclick="togglePlay()">
+        <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <button class="btn" onclick="skip(10)" title="快進10秒">
+        <svg viewBox="0 0 24 24"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
+      </button>
+      <span class="time" id="timeDisplay">0:00 / 0:00</span>
+      <div class="spacer"></div>
+      <button class="speed-btn" id="speedBtn" onclick="cycleSpeed()">1×</button>
+      <div class="vol-wrap">
+        <button class="btn" onclick="toggleMute()" id="muteBtn">
+          <svg id="volIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        </button>
+        <input class="vol-slider" id="volSlider" type="range" min="0" max="1" step="0.02" value="1" oninput="setVolume(this.value)">
+      </div>
+      <button class="btn" onclick="toggleFullscreen()" title="全螢幕">
+        <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const vid = document.getElementById('vid');
+
+// Parse URL params
+const params = new URLSearchParams(location.search);
+const src = params.get('src') || 'pd';
+const id  = params.get('id')  || '';
+
+// Build actual video URL
+function buildVideoUrl(src, id) {
+  if (src === 'pd') {
+    // Support both full URL input and bare ID
+    if (id.startsWith('http')) return id;
+    const match = id.match(/pixeldrain\.com\/(?:u|api\/file)\/([a-zA-Z0-9]+)/);
+    return match
+      ? `https://pixeldrain.com/api/file/${match[1]}`
+      : `https://pixeldrain.com/api/file/${id}`;
+  }
+  if (src === 'cb') {
+    if (id.startsWith('http')) return id;
+    return `https://files.catbox.moe/${id}`;
+  }
+  // raw url
+  return id;
+}
+
+const videoUrl = buildVideoUrl(src, id);
+
+// Set page title & label
+document.title = id ? `播放 ${id}` : '播放器';
+document.getElementById('vidIdLabel').textContent = videoUrl;
+
+// Load video
+if (videoUrl) {
+  vid.src = videoUrl;
+  vid.addEventListener('error', () => {
+    document.getElementById('errorMsg').classList.add('show');
+    vid.style.display = 'none';
+  });
+} else {
+  document.getElementById('errorMsg').classList.add('show');
+}
+
+// Fix back link to be relative to player/ directory
+document.getElementById('homeLink').href = '../';
+document.getElementById('backBtn').href = '../';
+
+// Controls
+const PLAY_SVG  = '<path d="M8 5v14l11-7z"/>';
+const PAUSE_SVG = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+const playIcon  = document.getElementById('playIcon');
+
+function togglePlay(){ vid.paused ? vid.play() : vid.pause(); }
+vid.addEventListener('play',  () => playIcon.innerHTML = PAUSE_SVG);
+vid.addEventListener('pause', () => playIcon.innerHTML = PLAY_SVG);
+
+function skip(s){ vid.currentTime = Math.max(0, Math.min(vid.duration||0, vid.currentTime+s)); }
+
+function fmt(s){
+  if(!s||isNaN(s)) return '0:00';
+  const m=Math.floor(s/60),sec=Math.floor(s%60);
+  return `${m}:${sec.toString().padStart(2,'0')}`;
+}
+const progressFill  = document.getElementById('progressFill');
+const progressThumb = document.getElementById('progressThumb');
+const progressWrap  = document.getElementById('progressWrap');
+const timeDisplay   = document.getElementById('timeDisplay');
+
+vid.addEventListener('timeupdate', () => {
+  const pct = vid.duration ? (vid.currentTime/vid.duration)*100 : 0;
+  progressFill.style.width = pct+'%';
+  progressThumb.style.left = pct+'%';
+  timeDisplay.textContent  = `${fmt(vid.currentTime)} / ${fmt(vid.duration)}`;
+});
+
+let seeking=false;
+function seekTo(e){
+  const r=progressWrap.getBoundingClientRect();
+  const pct=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));
+  vid.currentTime=pct*(vid.duration||0);
+}
+progressWrap.addEventListener('mousedown',e=>{seeking=true;seekTo(e);});
+document.addEventListener('mousemove',e=>{if(seeking)seekTo(e);});
+document.addEventListener('mouseup',()=>{seeking=false;});
+
+function setVolume(v){ vid.volume=v; vid.muted=v==0; updateVolIcon(); }
+function toggleMute(){ vid.muted=!vid.muted; document.getElementById('volSlider').value=vid.muted?0:vid.volume; updateVolIcon(); }
+const VOL_ON  = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+const VOL_OFF = '<path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A8.99 8.99 0 0 0 17.73 18l1.98 2L21 18.73 4.27 3zM12 4 9.91 6.09 12 8.18V4z"/>';
+function updateVolIcon(){ document.getElementById('volIcon').innerHTML=(vid.muted||vid.volume===0)?VOL_OFF:VOL_ON; }
+
+const speeds=[0.5,0.75,1,1.25,1.5,2]; let speedIdx=2;
+function cycleSpeed(){ speedIdx=(speedIdx+1)%speeds.length; vid.playbackRate=speeds[speedIdx]; document.getElementById('speedBtn').textContent=speeds[speedIdx]+'×'; }
+
+function toggleFullscreen(){
+  const el=document.querySelector('.video-container');
+  if(!document.fullscreenElement) el.requestFullscreen?.();
+  else document.exitFullscreen?.();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'){e.preventDefault();togglePlay();}
+  if(e.code==='ArrowLeft') skip(-10);
+  if(e.code==='ArrowRight') skip(10);
+  if(e.code==='KeyF') toggleFullscreen();
+  if(e.code==='KeyM') toggleMute();
+});
+</script>
+</body>
+</html>
