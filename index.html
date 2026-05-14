@@ -30,10 +30,8 @@ body{
   align-items:center;
   justify-content:center;
   padding:32px 20px;
-  gap:0;
 }
 
-/* noise overlay */
 body::before{
   content:'';
   position:fixed;inset:0;
@@ -41,51 +39,41 @@ body::before{
   pointer-events:none;z-index:0;opacity:.4;
 }
 
-.wrap{position:relative;z-index:1;width:100%;max-width:640px;display:flex;flex-direction:column;gap:32px;}
+.wrap{
+  position:relative;z-index:1;
+  width:100%;max-width:640px;
+  display:flex;flex-direction:column;gap:32px;
+}
 
-/* title */
 .title-block{display:flex;flex-direction:column;gap:4px;}
 h1{
   font-family:'Bebas Neue',sans-serif;
   font-size:clamp(48px,10vw,80px);
-  letter-spacing:.04em;
-  line-height:.9;
+  letter-spacing:.04em;line-height:.9;
   color:var(--accent);
 }
 .subtitle{font-size:11px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;}
 
-/* card */
 .card{
   background:var(--card);
   border:1px solid var(--border);
   border-radius:4px;
   padding:28px;
-  display:flex;
-  flex-direction:column;
-  gap:20px;
+  display:flex;flex-direction:column;gap:20px;
 }
 
 .field{display:flex;flex-direction:column;gap:8px;}
 label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
 
-.row{display:flex;gap:8px;}
-
 .seg{
   display:flex;
   border:1px solid var(--border);
-  border-radius:3px;
-  overflow:hidden;
+  border-radius:3px;overflow:hidden;
 }
 .seg button{
-  flex:1;
-  background:none;
-  border:none;
-  color:var(--muted);
-  font-family:var(--mono);
-  font-size:12px;
-  padding:9px 14px;
-  cursor:pointer;
-  transition:all .15s;
+  flex:1;background:none;border:none;
+  color:var(--muted);font-family:var(--mono);font-size:12px;
+  padding:9px 14px;cursor:pointer;transition:all .15s;
   border-right:1px solid var(--border);
 }
 .seg button:last-child{border-right:none;}
@@ -93,177 +81,123 @@ label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--m
 .seg button:not(.active):hover{color:var(--text);background:var(--border);}
 
 input[type=text]{
-  width:100%;
-  background:var(--bg);
-  border:1px solid var(--border);
-  border-radius:3px;
-  padding:11px 14px;
-  color:var(--text);
-  font-family:var(--mono);
-  font-size:13px;
-  outline:none;
-  transition:border-color .15s;
+  width:100%;background:var(--bg);
+  border:1px solid var(--border);border-radius:3px;
+  padding:11px 14px;color:var(--text);
+  font-family:var(--mono);font-size:13px;
+  outline:none;transition:border-color .15s;
 }
 input[type=text]:focus{border-color:var(--accent);}
 input[type=text]::placeholder{color:var(--muted);}
 
 .generate-btn{
-  background:var(--accent);
-  color:#000;
-  border:none;
-  border-radius:3px;
-  padding:13px;
-  font-family:'Bebas Neue',sans-serif;
-  font-size:20px;
-  letter-spacing:.1em;
-  cursor:pointer;
-  transition:opacity .15s;
+  background:var(--accent);color:#000;border:none;border-radius:3px;
+  padding:13px;font-family:'Bebas Neue',sans-serif;font-size:20px;
+  letter-spacing:.1em;cursor:pointer;transition:opacity .15s;
 }
 .generate-btn:hover{opacity:.85;}
 
-/* result */
 .result{display:none;flex-direction:column;gap:16px;}
 .result.show{display:flex;}
 
 .result-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
 
-.result-url{
-  background:var(--bg);
-  border:1px solid var(--accent);
-  border-radius:3px;
-  padding:12px 14px;
-  font-size:12px;
-  color:var(--accent);
-  word-break:break-all;
-  line-height:1.6;
+.bbcode-box{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:3px;padding:12px 14px;font-size:12px;
+  color:#888;word-break:break-all;line-height:1.6;
 }
+.bbcode-box span{color:var(--accent2);}
 
-.copy-row{display:flex;gap:8px;}
+.btn-row{display:flex;gap:8px;}
+
 .copy-btn{
-  flex:1;
-  background:none;
-  border:1px solid var(--border);
-  border-radius:3px;
-  padding:9px;
-  color:var(--muted);
-  font-family:var(--mono);
-  font-size:11px;
-  cursor:pointer;
-  transition:all .15s;
-  letter-spacing:.06em;
+  flex:1;background:none;border:1px solid var(--border);
+  border-radius:3px;padding:10px;color:var(--muted);
+  font-family:var(--mono);font-size:11px;cursor:pointer;
+  transition:all .15s;letter-spacing:.06em;text-align:center;
 }
 .copy-btn:hover{border-color:var(--text);color:var(--text);}
 .copy-btn.copied{border-color:var(--accent);color:var(--accent);}
 
-.bbcode-box{
-  background:var(--bg);
-  border:1px solid var(--border);
-  border-radius:3px;
-  padding:12px 14px;
-  font-size:12px;
-  color:#888;
-  word-break:break-all;
-  line-height:1.6;
+.goto-btn{
+  flex:1;background:var(--accent);color:#000;border:none;
+  border-radius:3px;padding:10px;font-family:var(--mono);
+  font-size:11px;font-weight:600;cursor:pointer;
+  text-align:center;text-decoration:none;
+  display:block;letter-spacing:.06em;transition:opacity .15s;
 }
-.bbcode-box span{color:var(--accent2);}
+.goto-btn:hover{opacity:.85;}
 
-.preview-btn{
-  background:none;
-  border:1px solid var(--border);
-  border-radius:3px;
-  padding:9px;
-  color:var(--muted);
-  font-family:var(--mono);
-  font-size:11px;
-  cursor:pointer;
-  transition:all .15s;
-  text-align:center;
-  text-decoration:none;
-  display:block;
-  letter-spacing:.06em;
-}
-.preview-btn:hover{border-color:var(--text);color:var(--text);}
-
-/* divider */
 .divider{height:1px;background:var(--border);}
 
-/* how */
 .how{display:flex;flex-direction:column;gap:10px;}
 .step{display:flex;gap:14px;align-items:flex-start;font-size:12px;line-height:1.6;color:var(--muted);}
 .step-num{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:22px;
-  color:var(--border);
-  line-height:1;
-  min-width:20px;
+  font-family:'Bebas Neue',sans-serif;font-size:22px;
+  color:var(--border);line-height:1;min-width:20px;
 }
 </style>
 </head>
 <body>
 <div class="wrap">
+
   <div class="title-block">
     <h1>VIDLINK</h1>
     <div class="subtitle">影片播放連結產生器</div>
   </div>
 
   <div class="card">
-    <!-- source -->
     <div class="field">
       <label>影片來源</label>
       <div class="seg">
         <button class="active" id="btn-cb" onclick="setSource('cb')">Catbox</button>
-        <button id="btn-url" onclick="setSource('url')">直接URL</button>
+        <button id="btn-url" onclick="setSource('url')">直接 URL</button>
       </div>
     </div>
 
-    <!-- id input -->
-    <div class="field" id="field-id">
+    <div class="field">
       <label id="input-label">Catbox 檔名（含副檔名）</label>
       <input type="text" id="vidInput" placeholder="例：abc123.mp4">
     </div>
 
     <button class="generate-btn" onclick="generate()">產生播放連結</button>
 
-    <!-- result -->
     <div class="result" id="result">
       <div class="divider"></div>
-
-      <div class="copy-row">
-        <a class="preview-btn" id="previewLink" href="#" target="_blank">前往播放器觀看 ↗</a>
-      </div>
 
       <div>
         <div class="result-label" style="margin-bottom:8px">論壇 BBCode</div>
         <div class="bbcode-box" id="bbcodeBox"></div>
       </div>
 
-      <input type="hidden" id="resultUrl">
-      <button class="copy-btn" id="copyBbcode" onclick="copyText('bbcode')" style="text-align:center">複製 BBCode</button>
+      <div class="btn-row">
+        <button class="copy-btn" id="copyBbcode" onclick="copyBbcode()">複製 BBCode</button>
+        <a class="goto-btn" id="previewLink" href="#" target="_blank">前往播放器觀看 ↗</a>
+      </div>
     </div>
   </div>
 
-  <!-- how to use -->
   <div class="card">
     <div class="result-label">使用說明</div>
     <div class="how">
-      <div class="step"><div class="step-num">1</div><div>上傳影片到Catbox或其他影音圖床，取得影片 ID 或網址</div></div>
-      <div class="step"><div class="step-num">2</div><div>在上方輸入 ID / 網址，點「產生播放連結」</div></div>
+      <div class="step"><div class="step-num">1</div><div>上傳影片到 Catbox 或影音圖床，取得檔案 ID 或網址</div></div>
+      <div class="step"><div class="step-num">2</div><div>在上方輸入 ID，點「產生播放連結」</div></div>
       <div class="step"><div class="step-num">3</div><div>複製 BBCode，貼到論壇發文即可嵌入播放</div></div>
-      <div class="step"><div class="step-num">4</div><div>播放器網址永久有效，論壇貼文隨時都能播放</div></div>
     </div>
-   
   </div>
-    <div class="by">By 性愛機器</div>
+
 </div>
 
 <script>
-let source = 'pd';
+let source = 'cb';
+let playerUrl = '';
 
-// Auto-detect base URL so this works on any host (GitHub Pages, local, etc.)
-const BASE = (() => {
-  const loc = location.href.replace(/\/?(?:index\.html)?(\?.*)?$/, '');
-  return loc;
-})();
+// ★ 上傳到 GitHub Pages 後，把下面改成你的實際網址
+// 例如：'https://yourname.github.io/vidlink'
+const SITE_BASE = '';
+
+const BASE = SITE_BASE || location.href.replace(/\/?(?:index\.html)?(\?.*)?$/, '');
 
 function setSource(s) {
   source = s;
@@ -271,10 +205,7 @@ function setSource(s) {
   document.getElementById('btn-' + s).classList.add('active');
   const label = document.getElementById('input-label');
   const input = document.getElementById('vidInput');
-  if (s === 'pd') {
-    label.textContent = 'Pixeldrain 檔案 ID';
-    input.placeholder = '例：AbCdEfGh1234';
-  } else if (s === 'cb') {
+  if (s === 'cb') {
     label.textContent = 'Catbox 檔名（含副檔名）';
     input.placeholder = '例：abc123.mp4';
   } else {
@@ -286,36 +217,23 @@ function setSource(s) {
 
 function generate() {
   const val = document.getElementById('vidInput').value.trim();
-  if (!val) { alert('請輸入影片 ID 或網址'); return; }
+  if (!val) { alert('請輸入檔名或網址'); return; }
 
-  // Build player URL
-  const playerUrl = `${BASE}/player/?src=${encodeURIComponent(source)}&id=${encodeURIComponent(val)}`;
-  const bbcode = `[xmp4]${playerUrl}][/xmp4]`;
-  // Some forums support iframe/video embed:
-  // const bbcode2 = `[video]${playerUrl}[/video]`;
+  playerUrl = `${BASE}/player/?src=${encodeURIComponent(source)}&id=${encodeURIComponent(val)}`;
 
-  document.getElementById('resultUrl').textContent = playerUrl;
   document.getElementById('bbcodeBox').innerHTML =
-    `<span>[xmp4]${playerUrl}[/xmp4]</span>`;
+    `<span>[xmp4]</span>${playerUrl}<span>[/xmp4]</span>`;
   document.getElementById('previewLink').href = playerUrl;
   document.getElementById('result').classList.add('show');
 }
 
-function copyText(type) {
-  let text;
-  const btnId = type === 'url' ? 'copyUrl' : 'copyBbcode';
-  if (type === 'url') {
-    text = document.getElementById('resultUrl').textContent;
-  } else {
-    const url = document.getElementById('resultUrl').textContent;
-    text = `[xmp4]${url}][/xmp4]`;
-  }
+function copyBbcode() {
+  const text = `[xmp4]${playerUrl}[/xmp4]`;
   navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById(btnId);
-    const orig = btn.textContent;
+    const btn = document.getElementById('copyBbcode');
     btn.textContent = '✓ 已複製';
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+    setTimeout(() => { btn.textContent = '複製 BBCode'; btn.classList.remove('copied'); }, 1800);
   });
 }
 
