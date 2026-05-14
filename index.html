@@ -295,7 +295,7 @@ function generate() {
 
   document.getElementById('resultUrl').textContent = playerUrl;
   document.getElementById('bbcodeBox').innerHTML =
-    `<span>[url=</span>${playerUrl}<span>]</span>▶ 點此播放影片<span>[/url]</span>`;
+    `<span>[xmp4]${playerUrl}[/xmp4]</span>`;
   document.getElementById('previewLink').href = playerUrl;
   document.getElementById('result').classList.add('show');
 }
@@ -307,7 +307,7 @@ function copyText(type) {
     text = document.getElementById('resultUrl').textContent;
   } else {
     const url = document.getElementById('resultUrl').textContent;
-    text = `[url=${url}]▶ 點此播放影片[/url]`;
+    text = `[xmp4]${url}][/xmp4]`;
   }
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById(btnId);
