@@ -211,16 +211,15 @@ input[type=text]::placeholder{color:var(--muted);}
     <div class="field">
       <label>影片來源</label>
       <div class="seg">
-        <button class="active" id="btn-pd" onclick="setSource('pd')">Pixeldrain</button>
-        <button id="btn-cb" onclick="setSource('cb')">Catbox</button>
+        <button class="active" id="btn-cb" onclick="setSource('cb')">Catbox</button>
         <button id="btn-url" onclick="setSource('url')">直接URL</button>
       </div>
     </div>
 
     <!-- id input -->
     <div class="field" id="field-id">
-      <label id="input-label">Pixeldrain 檔案 ID</label>
-      <input type="text" id="vidInput" placeholder="例：AbCdEfGh1234">
+      <label id="input-label">Catbox 檔名（含副檔名）</label>
+      <input type="text" id="vidInput" placeholder="例：abc123.mp4">
     </div>
 
     <button class="generate-btn" onclick="generate()">產生播放連結</button>
@@ -229,14 +228,8 @@ input[type=text]::placeholder{color:var(--muted);}
     <div class="result" id="result">
       <div class="divider"></div>
 
-      <div>
-        <div class="result-label" style="margin-bottom:8px">播放器網址（永久有效）</div>
-        <div class="result-url" id="resultUrl"></div>
-      </div>
-
       <div class="copy-row">
-        <button class="copy-btn" id="copyUrl" onclick="copyText('url')">複製網址</button>
-        <a class="preview-btn" id="previewLink" href="#" target="_blank">在新分頁預覽 ↗</a>
+        <a class="preview-btn" id="previewLink" href="#" target="_blank">前往播放器觀看 ↗</a>
       </div>
 
       <div>
@@ -244,6 +237,7 @@ input[type=text]::placeholder{color:var(--muted);}
         <div class="bbcode-box" id="bbcodeBox"></div>
       </div>
 
+      <input type="hidden" id="resultUrl">
       <button class="copy-btn" id="copyBbcode" onclick="copyText('bbcode')" style="text-align:center">複製 BBCode</button>
     </div>
   </div>
@@ -252,11 +246,12 @@ input[type=text]::placeholder{color:var(--muted);}
   <div class="card">
     <div class="result-label">使用說明</div>
     <div class="how">
-      <div class="step"><div class="step-num">1</div><div>上傳影片到 Pixeldrain 或 Catbox，取得檔案 ID 或網址</div></div>
-      <div class="step"><div class="step-num">2</div><div>在上方輸入 ID，點「產生播放連結」</div></div>
+      <div class="step"><div class="step-num">1</div><div>上傳影片到Catbox或其他影音圖床，取得影片 ID 或網址</div></div>
+      <div class="step"><div class="step-num">2</div><div>在上方輸入 ID / 網址，點「產生播放連結」</div></div>
       <div class="step"><div class="step-num">3</div><div>複製 BBCode，貼到論壇發文即可嵌入播放</div></div>
       <div class="step"><div class="step-num">4</div><div>播放器網址永久有效，論壇貼文隨時都能播放</div></div>
     </div>
+     <div class="by">By 性愛機器</div>
   </div>
 </div>
 
@@ -294,7 +289,7 @@ function generate() {
 
   // Build player URL
   const playerUrl = `${BASE}/player/?src=${encodeURIComponent(source)}&id=${encodeURIComponent(val)}`;
-  const bbcode = `[url=${playerUrl}]▶ 點此播放影片[/url]`;
+  const bbcode = `[xmp4]${playerUrl}][/xmp4]`;
   // Some forums support iframe/video embed:
   // const bbcode2 = `[video]${playerUrl}[/video]`;
 
